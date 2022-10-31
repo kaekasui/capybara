@@ -767,12 +767,25 @@ module Capybara
     end
 
     NODE_METHODS.each do |method|
-      class_eval <<~METHOD, __FILE__, __LINE__ + 1
-        def #{method}(...)
-          @touched = true
-          current_scope.#{method}(...)
-        end
-      METHOD
+      #if method != 'find'
+        class_eval <<~METHOD, __FILE__, __LINE__ + 1
+          def #{method}(...)
+            @touched = true
+            current_scope.#{method}(...)
+          end
+        METHOD
+      #else
+      #  class_eval <<~METHOD, __FILE__, __LINE__ + 1
+      #    def #{method}(...)
+      #      @touched = true
+      #      current_scope.#{method}(...)
+      #    end
+      #  METHOD
+        #define_method method do |*args, **options, &block|
+        #  @touched = true
+        #  current_scope.send(method, *args, **options, &block)
+        #end
+      #end
     end
 
     DOCUMENT_METHODS.each do |method|
